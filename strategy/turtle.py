@@ -1,8 +1,11 @@
 # region imports
 from AlgorithmImports import *
+import datetime
 # endregion
 
 class TurtleV1(QCAlgorithm):
+
+    SP_500_MOMENTUM_TOP_10_STOCKS = "NVDA,META,AMZN,AVGO,JPM,TSLA,WMT,NFLX,PLTR,COST" # https://finance.yahoo.com/quote/SPMO/holdings/
 
     def initialize(self):
 
@@ -18,7 +21,7 @@ class TurtleV1(QCAlgorithm):
         self.atr_length = self.get_parameter("atr_lenght", 20)
 
 
-        self.symbols = self.get_parameter("symbols", "NVDA,META,AMZN,AVGO,JPM,TSLA,WMT,NFLX,PLTR,COST").split(",") # https://finance.yahoo.com/quote/SPMO/holdings/ 
+        self.symbols = self.get_parameter("symbols", self.SP_500_MOMENTUM_TOP_10_STOCKS).split(",")  
         self.market_type = self.get_parameter("market_type","equity") # equity, crypto
 
         # Filter settings
@@ -35,8 +38,8 @@ class TurtleV1(QCAlgorithm):
         # ********************************
 
         # Basic
-        self.set_start_date(2015, 1, 1)
-        # self.set_end_date(2025,2,4)
+        self.set_start_date(datetime.date.today().year - 10, 1, 1)
+        # self.set_end_date(2025,1,1)
         self.set_cash(10000)
         self.enable_automatic_indicator_warm_up = True
 
