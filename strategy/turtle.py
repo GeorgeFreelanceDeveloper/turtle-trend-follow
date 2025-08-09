@@ -6,21 +6,17 @@ import datetime
 # endregion
 
 class TurtleV2(QCAlgorithm):
+
     INDEXES = {
-        "SP500": ["NVDA", "MSFT", "AAPL", "AMZN", "META", "AVGO", "GOOGL", "BRK.B", "TSLA", "GOOG"],
-        # https://finance.yahoo.com/quote/SPY/holdings/
-        "NASDAQ100": ["NVDA", "MSFT", "AAPL", "AMZN", "AVGO", "META", "NFLX", "TSLA", "COST", "GOOGL"],
-        # https://finance.yahoo.com/quote/QQQ/holdings/
-        "SP500 MOMENTUM": ["NVDA", "META", "AMZN", "AVGO", "JPM", "TSLA", "WMT", "NFLX", "PLTR", "COST"],
-        # https://finance.yahoo.com/quote/SPMO/holdings/
-        "SP MEDIUM CAP MOMENTUM": ["IBKR", "EME", "SFM", "FIX", "GWRE", "USFD", "CRS", "EQH", "CW", "CASY"],
-        # https://finance.yahoo.com/quote/XMMO/holdings/
-        "SP SMALL CAP MOMENTUM": ["EAT", "CORT", "COOP", "AWI", "IDCC", "SKYW", "JXN", "CALM", "DY", "SMTC"]
-        # https://finance.yahoo.com/quote/XSMO/holdings/
+        "SP500": ["NVDA", "MSFT", "AAPL", "AMZN", "META", "AVGO", "GOOGL", "BRK.B", "TSLA", "GOOG"], # https://finance.yahoo.com/quote/SPY/holdings/
+        "NASDAQ100": ["NVDA", "MSFT", "AAPL", "AMZN", "AVGO", "META", "NFLX", "TSLA", "COST", "GOOGL"], # https://finance.yahoo.com/quote/QQQ/holdings/
+        "SP500 MOMENTUM": ["NVDA", "META", "AMZN", "AVGO", "JPM", "TSLA", "WMT", "NFLX", "PLTR", "COST"], # https://finance.yahoo.com/quote/SPMO/holdings/
+        "SP MEDIUM CAP MOMENTUM": ["IBKR", "EME", "SFM", "FIX", "GWRE", "USFD", "CRS", "EQH", "CW", "CASY"], # https://finance.yahoo.com/quote/XMMO/holdings/
+        "SP SMALL CAP MOMENTUM": ["EAT", "CORT", "COOP", "AWI", "IDCC", "SKYW", "JXN", "CALM", "DY", "SMTC"] # https://finance.yahoo.com/quote/XSMO/holdings/
     }
 
     BREAK_OUTS = {
-        "YEARLY": {"entry": 250, "exit": 125},
+        "YEARLY": {"entry": 250, "exit": 125}, # 250 working days when is stock exchange open
         "SEMI-YEARLY": {"entry": 125, "exit": 62},
         "QUARTERLY": {"entry": 60, "exit": 30},
         "MONTHLY": {"entry": 20, "exit": 10},
