@@ -16,7 +16,7 @@ The strategy is based on the legendary **Turtle Trading** method, which uses **p
 The compound annual growth rate is the rate of return that an investment would need to have every year 
 in order to grow from its beginning balance to its ending balance, over a given time interval.
 
-| Stocks    | Benchmark ETF | Momentum ETF | turtle |
+| Stocks    | Benchmark ETF | Momentum ETF | Turtle |
 |-----------|---------------|--------------|--------|
 | LargeCap  | 16.52%        | 22.23%       | 23.27% |
 | MidCap    | 13.40%        | 17.67%       | TODO   |
@@ -27,7 +27,7 @@ Maximum drawdown is the worst dip an investment takes from a high to a low.
 Maximum drawdown is an indicator of downside risk over a specified time period 
 and highlights the potential volatility of a stock.
 
-| Stocks    | Benchmark ETF | Momentum ETF | turtle |
+| Stocks    | Benchmark ETF | Momentum ETF | Turtle |
 |-----------|---------------|--------------|--------|
 | LargeCap  | 35%           | 32%          | 25%    |
 | MidCap    | 44%           | 40%          | TODO   |
