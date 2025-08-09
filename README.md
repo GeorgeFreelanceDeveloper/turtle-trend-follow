@@ -1,13 +1,6 @@
-# TurtleTrendFollow
+# 🐢 Turtle V2 Trend-Follow Strategy
 
-## About strategy
-The Turtle Trading strategy was developed by Richard Dennis and William Eckhardt in the early 1980s. Story
-relates that Richard Dennis, a successful commodity trader, believed that trading could be taught to anyone and decided to conduct an experiment to confirm his theory. He created a group of people known as the "Turtles" and taught them his trade system.
-
-The basic principle of the Turtle Trading strategy is to follow the trend. The goal is to identify and trade strong trends on financial markets. Turtles learned to buy and hold futures contracts for markets that were in a strong uptrend and sell short and hold contracts for markets in a strong downtrend. Personally, I think it's better focus on markets in a long-term up-trend and trade only on the long side.
-
-> "Turtle trading system is simple to learn but to work properly
-it requires a trending market, confidence in the system, consistency and discipline." Richard Dennis
+The strategy is based on the legendary **Turtle Trading** method, which uses **price channel breakouts** (Donchian Channel) to enter and exit positions. This version is adapted for modern markets and allows testing of various index baskets and breakout periods.
 
 **Prerequisites**
 * Liquidity
@@ -19,76 +12,85 @@ it requires a trending market, confidence in the system, consistency and discipl
 > *Backtest Period: Jan 2015 – Feb 2025*  
 > *(Using Top 10 stocks from S&P500 MOMENTUM index)*
 
-| Metric                  | Value         |
-|-------------------------|---------------|
-| CAGR (Annual Return)    | 18.8%        |
-| Max Drawdown            | -21.2%        |
-| Sharpe Ratio            | 0.8          |
-| Win Rate (Monthly)      | 48%           |
-| Total Trades            | 428           |
+### CAGR 
+The compound annual growth rate is the rate of return that an investment would need to have every year 
+in order to grow from its beginning balance to its ending balance, over a given time interval.
 
-**Backtests last 10 years**
-* [Turtle on top 10 stocks from S&P 500 MOMENTUM index](https://s3.amazonaws.com/reports.quantconnect.com/344866/21314905/234eb753199d0237ca38f6eb33c091f7.pdf)
+| Stocks    | Benchmark ETF | Momentum ETF | turtle |
+|-----------|---------------|--------------|--------|
+| LargeCap  | 16.52%        | 22.23%       | 23.27% |
+| MidCap    | 13.40%        | 17.67%       | TODO   |
+| SmallCap  | 9.91%         | 14.38%       | TODO   |
 
-## Author
-Richard Dennis, a legendary figure in the world of trading, rose to prominence in the 1980s with his innovative trading strategies. Born in 1949, Dennis started his career as a commodities trader in Chicago. He gained widespread recognition for his role in the Turtle Trading Experiment, where he famously recruited and trained a group of novice traders, teaching them his proprietary trading techniques.
+### Max drawdown
+Maximum drawdown is the worst dip an investment takes from a high to a low. 
+Maximum drawdown is an indicator of downside risk over a specified time period 
+and highlights the potential volatility of a stock.
 
-Dennis' trading philosophy emphasized the importance of following systematic rules rather than relying on emotions or intuition. He believed that successful trading could be taught, regardless of one's background or experience. This belief was exemplified in the Turtle experiment, where his students, dubbed the "Turtle Traders," achieved remarkable success.
+| Stocks    | Benchmark ETF | Momentum ETF | turtle |
+|-----------|---------------|--------------|--------|
+| LargeCap  | 35%           | 32%          | 25%    |
+| MidCap    | 44%           | 40%          | TODO   |
+| SmallCap  | 43%           | 45%          | TODO   |
 
-Richard Dennis's legacy endures as a testament to the power of disciplined trading strategies and the potential for individuals to achieve success in the financial markets with the right guidance and methodology.
+> * Backtest Period: Jan 2020 – Feb 2025
+> * Turtle yearly breakout with filter
 
-## Entry and exit conditions for long side
-**Entry**
-* Daily close price is above max 20 days high price
+---
 
-**Exit**
-* Daily close price is below min 10 days low price
+## ⚙️ Parameters and settings
 
-## Filters
-**Simple**
-* Daily close price is above 200 day moving average (bullish environment)
+- **Stock indices**: The strategy works with predefined top 10 stocks from index (e.g. SP500, NASDAQ100, Momentum indices).
+- **Breakout periods**: User-selectable lengths for entry and exit signals (e.g. YEARLY = 250-day entry, 125-day exit).
+- **Benchmark filter**: Optional filter that allows purchases only when the benchmark (e.g. SPMO) is above its 200-day SMA.
+- **Leverage**: Allows you to set the leverage for positions.
 
-**Advance**
+---
 
-I think using Super trend indicator is more accurate determination of medium-term trend changes from bear market to bull market and vice versa.
+## 📈 Indicators
 
-* Daily close price is above Super trend indicator(Time frame: Weekly, ATR lenght: 10, Factor: 3)
+- **Donchian Channel (DCH)**: For each symbol, the upper and lower bands are calculated based on the selected breakout period.
+- **SMA200**: Used for the benchmark filter, if activated.
 
-## Position sizing
-The size of the position is determined on the basis of volatility, the more volatile the market, the smaller the positions, and conversely, the less volatile the market, the larger positions are traded so that the risk per trade is always the same in various volatile markets.
+---
 
-**Simple by ATR**
-```c#
-private double ComputeTradeAmount(){
-    int AtrMultiplier = 2;
-    double amount = (RiskPerTradeInPercentage * AccountSize) / AtrMultiplier * ATR(20, Days)
-    return amount;
-}
+## 🧠 Strategy Logic
 
-```
+### 1. **Entry Condition (Buy Condition)**:
+- The closing price is **above the upper band** of the Donchian Channel.
+- The benchmark is **above the 200-day SMA** (if the filter is active).
+- The position is no longer open (not long).
 
-**Advance accurately determine the percentage risk**
-```c#
-private double ComputeTradeAmount(double entryPrice, double stopPrice)
-{
-	double riskPerTrade = (RiskPercentage / 100) * Account.Balance;
-        double move = entryPrice - stopPrice;
-        double amountRaw = riskPerTrade / ((Math.Abs(move) / Symbol.PipSize) * Symbol.PipValue);
-        double amount = ((int)(amountRaw / Symbol.VolumeInUnitsStep)) * Symbol.VolumeInUnitsStep;
-        return amount;
-}
-```
+### 2. **Exit Condition (Sell Condition)**:
+- The closing price is **below the lower band** of the Donchian Channel.
+- The benchmark is still above the SMA200 (if the filter is active).
 
-## Management position
-- Only one position open for one market.
+---
 
-## Suitable markets for trading
-* Cryptocurrencies (Bitcoin, Ethereum)
-* Stock indexies (S&P 500, Nasdaq, DJI, NIFTY50)
-* Stocks in long-term uptrend (AAPL, MSFT, NVDA, TSLA, AMZN, NFLX, SHOP, MA, ASML, PANW)
-* Forex pairs in long-term uptrend (USDTRY, EURTRY, GBPTRY, USDINR, USDCNH) - <span style="color:red">warning: in reality impossible to trade due to high swap</span>
+## 💼 Position Management
 
-## Notes
+- **Entry**: If conditions are met, the position is set using `set_holdings` evenly across all stocks in the basket, taking into account the leverage effect.
+- **Exit**: If exit conditions are met, the position is **completely closed** using `liquidate`.
+
+---
+
+## 🧪 Backtesting Settings
+
+- **Start date**: 5 years back from the current year.
+- **Initial capital**: $10,000.
+- **Daily data**: Daily resolution is used for all stocks.
+
+---
+
+## 🧭 Summary
+
+Turtle V2 is a systematic trend-following strategy that:
+- Tracks breakouts of historical highs/lows.
+- Uses a filter based on market strength (benchmark SMA).
+- It is flexible thanks to the ability to choose an index, breakout period and leverage.
+- It is suitable for backtesting and analyzing the performance of various momentum baskets.
+
+---
 
 ## Resources
 * [Kryptoměny – Jak je obchodovat systematicky a vydělávat na růstu i propadu?](https://www.financnik.cz/clanky/obchodni-strategie/kryptomeny-systematicky/#trendove-obchodovani-kryptomen)
