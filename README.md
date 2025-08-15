@@ -33,7 +33,7 @@ and highlights the potential volatility of a stock.
 | MidCap    | 44%           | 40%          | 25.9%  |
 | SmallCap  | 43%           | 45%          | 25.2%  |
 
-> * Backtest Period: Jan 2020 – Feb 2025
+> * Backtest Period: Jan 2020 – May 2025
 > * Turtle yearly breakout with filter
 
 ---
