@@ -18,9 +18,9 @@ in order to grow from its beginning balance to its ending balance, over a given 
 
 | Stocks    | Benchmark ETF | Momentum ETF | Turtle |
 |-----------|---------------|--------------|--------|
-| LargeCap  | 16.52%        | 22.23%       | 23.27% |
-| MidCap    | 13.40%        | 17.67%       | TODO   |
-| SmallCap  | 9.91%         | 14.38%       | TODO   |
+| LargeCap  | 16.52%        | 22.23%       | 23.3% |
+| MidCap    | 13.40%        | 17.67%       | 13.3%  |
+| SmallCap  | 9.91%         | 14.38%       | 14%  |
 
 ### Max drawdown
 Maximum drawdown is the worst dip an investment takes from a high to a low. 
@@ -29,11 +29,11 @@ and highlights the potential volatility of a stock.
 
 | Stocks    | Benchmark ETF | Momentum ETF | Turtle |
 |-----------|---------------|--------------|--------|
-| LargeCap  | 35%           | 32%          | 25%    |
-| MidCap    | 44%           | 40%          | TODO   |
-| SmallCap  | 43%           | 45%          | TODO   |
+| LargeCap  | 35%           | 32%          | 25.1%    |
+| MidCap    | 44%           | 40%          | 16.3%  |
+| SmallCap  | 43%           | 45%          | 19.6%  |
 
-> * Backtest Period: Jan 2020 – Feb 2025
+> * Backtest Period: Jan 2020 – May 2025
 > * Turtle yearly breakout with filter
 
 ---
