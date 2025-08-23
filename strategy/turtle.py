@@ -2,8 +2,17 @@
 from AlgorithmImports import *
 import datetime
 
-
 # endregion
+
+"""
+    The Turtle Trading strategy is a trend-following approach originally developed 
+    by Richard Dennis and William Eckhardt in the 1980s. This implementation trades 
+    the top 10 stocks from a selected index (default: S&P 500 Momentum), buying 
+    breakouts above the Donchian Channel upper band and selling on breakdowns below 
+    the lower band. Timeframes for breakout levels are configurable (e.g., yearly, 
+    quarterly, monthly). Trades can optionally be filtered to only occur when 
+    the benchmark index is in an uptrend (price above 200-day SMA).
+"""
 
 class TurtleV2(QCAlgorithm):
 
@@ -40,6 +49,8 @@ class TurtleV2(QCAlgorithm):
         }
     }
 
+    BENCHMARK_OLD = "SPY"  # fallback benchmark
+
     BREAK_OUTS = {
         "YEARLY": {"entry": 250, "exit": 125},
         "SEMI-YEARLY": {"entry": 125, "exit": 62},
@@ -73,16 +84,34 @@ class TurtleV2(QCAlgorithm):
         self.enable_automatic_indicator_warm_up = True
 
         self.benchmark_symbol = self.INDEXES[index]["benchmark_symbol"]
+        self.benchmark_old_symbol = self.BENCHMARK_OLD
         self.symbols = self.INDEXES[index]["stocks"]
         self.markets = {symbol: self.add_equity(symbol, Resolution.DAILY, leverage=10) for symbol in self.symbols}
         self.add_equity(self.benchmark_symbol, Resolution.DAILY)
+        self.add_equity(self.benchmark_old_symbol, Resolution.DAILY)
+        self.enable_trading = True
 
         # Init indicators
         self.dchs = {symbol: self.dch(symbol, self.BREAK_OUTS[breakout]["entry"], self.BREAK_OUTS[breakout]["exit"]) for
                      symbol in self.symbols}
         self.benchmark_sma200 = self.sma(self.benchmark_symbol, 200)
+        self.benchmark_old_sma200 = self.sma(self.benchmark_old_symbol, 200)
 
     def on_data(self, data: Slice):
+        # **********************************
+        # Zkontroluj trend benchmarku
+        # **********************************
+        if self.enable_filter:
+            if self.benchmark_symbol in data.Bars:
+                bar_benchmark = data.Bars[self.benchmark_symbol]
+                self.enable_trading = bar_benchmark.close >= self.benchmark_sma200[1].value
+            elif self.benchmark_old_symbol in data.Bars:  # fallback
+                bar_benchmark = data.Bars[self.benchmark_old_symbol]
+                self.enable_trading = bar_benchmark.close >= self.benchmark_old_sma200[1].value
+
+        # **********************************
+        # Aplikuj strategii na každou akcii
+        # **********************************
         for symbol in self.symbols:
             dch = self.dchs[symbol]
             self.strategy(data, symbol, dch)
@@ -97,13 +126,9 @@ class TurtleV2(QCAlgorithm):
             return
 
         bar = data.Bars[symbol]
-        bar_benchmark = data.Bars[self.benchmark_symbol]
 
-        # Filter
-        filter = bar_benchmark.close > self.benchmark_sma200[1].value if self.enable_filter else True
-
-        buy_condition = bar.close > dch.upper_band[1].value and filter and not self.portfolio[symbol].is_long
-        sell_condition = bar.close < dch.lower_band[1].value if filter else True
+        buy_condition = bar.close > dch.upper_band[1].value and self.enable_trading and not self.portfolio[symbol].is_long
+        sell_condition = bar.close < dch.lower_band[1].value if self.enable_trading else True
 
         # ********************************
         # Manage trade
